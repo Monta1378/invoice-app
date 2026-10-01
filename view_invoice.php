@@ -1,8 +1,10 @@
 <?php
+require 'auth.php';
 require 'db.php';
 $id = $_GET['id'];
 // Handle creating / turning off the share link
 if (isset($_GET['share'])) {
+    checkCsrf();
     if ($_GET['share'] === 'on') {
         $token = bin2hex(random_bytes(16));
         $stmt = $pdo->prepare("UPDATE invoices SET share_token = ? WHERE id = ? AND share_token IS NULL");
@@ -79,13 +81,16 @@ $shareUrl = '';
 if (!empty($invoice['share_token'])) {
     $shareUrl = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/public_invoice.php?t=' . $invoice['share_token'];
 }
+$settings = $pdo->query("SELECT * FROM business_settings WHERE id = 1")->fetch();
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <title>Invoice <?= htmlspecialchars($invoice['invoice_number']) ?></title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
     </head>
     <body>
         <?php include 'nav.php'; ?>
@@ -93,6 +98,15 @@ if (!empty($invoice['share_token'])) {
             <div class="card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1>Invoice <?= htmlspecialchars($invoice['invoice_number']) ?></h1>
+                    <?php if (!empty($settings['business_name'])): ?>
+                        <div class="mb-3">
+                            <strong><?= htmlspecialchars($settings['business_name']) ?></strong><br>
+                            <?php if (!empty($settings['address'])): ?><?= htmlspecialchars($settings['address']) ?><br><?php endif; ?>
+                                <?php if (!empty($settings['phone'])): ?><?= htmlspecialchars($settings['phone']) ?><br><?php endif; ?>
+                                    <?php if (!empty($settings['email'])): ?><?= htmlspecialchars($settings['email']) ?><?php endif; ?>
+                        </div>
+                        <hr>
+                        <?php endif; ?>
                     <a href="invoice_pdf.php?id=<?= $invoice['id'] ?>" class="btn btn-primary">Download PDF</a>
                 </div>
                 <p><strong>Client:</strong><?= htmlspecialchars($invoice['client_name']) ?></p>
@@ -102,11 +116,11 @@ if (!empty($invoice['share_token'])) {
                 <p><strong>Due Date:</strong><?= htmlspecialchars($invoice['due_date']) ?></p>
                 <p><strong>Status:</strong>
             <?php if ($invoice['status'] === 'paid'): ?>
-            <span class="badge bg-success">Paid</span>
+            <span class="pill pill-success">Paid</span>
         <?php elseif ($invoice['status'] === 'partial'): ?>
-            <span class="badge bg-info text-dark">Partially paid</span>
+            <span class="pill pill-info text-dark">Partially paid</span>
             <?php else: ?>
-        <span class="badge bg-warning text-dark">Unpaid</span>
+        <span class="pill pill-warning text-dark">Unpaid</span>
     <?php endif; ?>
 </p>
         <table class="table table-bordered mt-3">
@@ -178,13 +192,13 @@ if (!empty($invoice['share_token'])) {
             <h3>Share Invoice</h3>
             <?php if ($shareUrl === ''): ?>
                 <p class="text-muted">This invoice isn't shared yet.</p>
-                <a href="view_invoice.php?id=<?= $id ?>&share=on" class="btn btn-outline-primary" style="width: fit-content;">Create share link</a>
+                <a href="view_invoice.php?id=<?= $id ?>&share=on&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-outline-primary" style="width: fit-content;">Create share link</a>
                 <?php else: ?>
                     <div class="input-group mb-2">
                         <input type="text" id="share-link" class="form-control" value="<?= htmlspecialchars($shareUrl) ?>" readonly>
                         <button type="button" class="btn btn-primary" onclick="copyLink()">Copy</button>
                     </div>
-                    <a href="view_invoice.php?id=<?= $id ?>&share=off" class="btn btn-sm btn-outline-danger" style="width: fit-content;"
+                    <a href="view_invoice.php?id=<?= $id ?>&share=off&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-sm btn-outline-danger" style="width: fit-content;"
                     onclick="return confirm('Turn off sharing? The old link will stop working.')">Turn off sharing</a>
                     <?php endif; ?>
             </div>
@@ -195,5 +209,6 @@ if (!empty($invoice['share_token'])) {
                 }
             </script>
         </div>
+        <?php include 'footer.php'; ?>
     </body>
 </html>

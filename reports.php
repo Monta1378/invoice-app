@@ -1,4 +1,5 @@
 <?php
+require 'auth.php';
 require 'db.php';
 
 // Invoiced per month (by invoice date) -> ['2026-08' => 21000.00, ...]
@@ -50,7 +51,9 @@ $topClients = $pdo->query("
 <html>
 <head>
     <title>Reports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -111,5 +114,6 @@ $topClients = $pdo->query("
             }
         });
     </script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

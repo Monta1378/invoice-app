@@ -1,4 +1,5 @@
 <?php
+require 'auth.php';
 require 'db.php';
 require 'vendor/autoload.php';
 use Dompdf\Dompdf;
@@ -18,8 +19,21 @@ $total = 0;
 foreach ($items as $item) {
     $total += $item['quantity'] * $item['unit_price'];
 }
+$settings = $pdo->query("SELECT * FROM business_settings WHERE id = 1")->fetch();
 // Build the HTML that will become the PDF
-$html = '
+$html = '';
+
+if (!empty($settings['business_name'])) {
+    $html .= '
+    <p><strong>' . htmlspecialchars($settings['business_name']) . '</strong><br>
+    ' . (!empty($settings['address']) ? htmlspecialchars($settings['address']) . '<br>' : '') . '
+    ' . (!empty($settings['phone']) ? htmlspecialchars($settings['phone']) . '<br>' : '') . '
+    ' . (!empty($settings['email']) ? htmlspecialchars($settings['email']) : '') . '
+    </p><hr>
+    ';
+}
+
+$html .= '
 <h1>Invoice ' . htmlspecialchars($invoice['invoice_number']) . '</h1>
 <p><strong>Client:</strong> ' . htmlspecialchars($invoice['client_name']) . '</p>
 <p><strong>Email:</strong> ' . htmlspecialchars($invoice['client_email']) . '</p>

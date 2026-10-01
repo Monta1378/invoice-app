@@ -1,4 +1,5 @@
 <?php
+require 'auth.php';
 require 'db.php';
 $id = $_GET['id'];
 $clients = $pdo->query("SELECT * FROM clients ORDER BY name")->fetchAll();
@@ -43,7 +44,9 @@ $items = $stmt->fetchAll();
 <html>
     <head>
         <title>Edit Invoice</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="custom.css" rel="stylesheet">
     </head>
     <body>
         <?php include 'nav.php'; ?>
@@ -62,25 +65,25 @@ $items = $stmt->fetchAll();
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Invoice Number</label>
-                        <input type="text" name="invoice_number" class="form-control" value="<?= htmlspecialchars($invoice['invoice_number']) ?>" required>
+                        <label class="form-label" for="invoice_number">Invoice Number</label>
+                        <input type="text" id="invoice_number" name="invoice_number" class="form-control" value="<?= htmlspecialchars($invoice['invoice_number']) ?>" required>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Invoice Date</label>
-                        <input type="date" name="invoice_date" class="form-control" value="<?= htmlspecialchars($invoice['invoice_date']) ?>" required>
+                        <label class="form-label" for="invoice_date">Invoice Date</label>
+                        <input type="date" id="invoice_date" name="invoice_date" class="form-control" value="<?= htmlspecialchars($invoice['invoice_date']) ?>" required>
                     </div>
                     <div class="col-md-2">
-                    <label class="form-label">Due Date</label>
-                    <input type="date" name="due_date" class="form-control" value="<?= htmlspecialchars($invoice['due_date']) ?>">
+                    <label class="form-label" for="due_date">Due Date</label>
+                    <input type="date" id="due_date" name="due_date" class="form-control" value="<?= htmlspecialchars($invoice['due_date']) ?>">
                     </div>
                 </div>
                 <h3>Items</h3>
                 <table id="items-table" class="table table-bordered">
                     <tr>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th></th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col"></th>
                     </tr>
                     <?php foreach ($items as $item): ?>
                         <tr>
@@ -93,7 +96,7 @@ $items = $stmt->fetchAll();
                 </table>
                 <div class="mb-3">
                     <label class="form-label">Terms & Conditions</label>
-                    <textarea name="terms" class="form-control" rows="4" <?= htmlspecialchars($invoice['terms'] ?? '') ?>></textarea>
+                    <textarea name="terms" class="form-control" rows="4"><?= htmlspecialchars($invoice['terms'] ?? '') ?></textarea>
                 </div>
                 <button type="button" class="btn btn-outline-secondary mb-3" onclick="addRow()">+ Add item</button>
                 <br>
@@ -117,5 +120,6 @@ $items = $stmt->fetchAll();
                     row.remove();
                 }
             </script>
+            <?php include 'footer.php'; ?>
     </body>
 </html>

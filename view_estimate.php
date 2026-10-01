@@ -1,9 +1,11 @@
 <?php
+require 'auth.php';
 require 'db.php';
 $id = $_GET['id'];
 
 // Handle status change (sent / accepted/ rejected)
 if (isset($_GET['status'])) {
+    checkCsrf();
     $newStatus = $_GET['status'];
     $stmt = $pdo->prepare("UPDATE estimates SET status = ? WHERE id = ?");
     $stmt->execute([$newStatus, $id]);
@@ -13,6 +15,7 @@ if (isset($_GET['status'])) {
 
 // Handle conversation to invoice
 if (isset($_GET['convert'])) {
+    checkCsrf();
     $pdo->beginTransaction();
 
     // Load the estimate
@@ -75,7 +78,9 @@ if (isset($_GET['convert'])) {
     <html>
         <head>
             <title>Estimate <?= htmlspecialchars($estimate['estimate_number']) ?></title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
         </head>
         <body>
             <?php include 'nav.php'; ?>
@@ -83,9 +88,6 @@ if (isset($_GET['convert'])) {
                 <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h1>Estimate <?= htmlspecialchars($estimate['estimate_number']) ?></h1>
-                        <?php if ($estimate['status'] !== 'accepted'): ?>
-                            <a href="view_estimate.php?id=<?= $id ?>&convert=1" class="btn btn-success" onclick="return confirm('Convert this estimate into an invoice?')">Convert to Invoice</a>
-                            <?php endif; ?>
                     </div>
                     <p><strong>Client:</strong> <?= htmlspecialchars($estimate['client_name']) ?></p>
                     <p><strong>Email:</strong> <?= htmlspecialchars($estimate['client_email']) ?></p>
@@ -94,23 +96,24 @@ if (isset($_GET['convert'])) {
                     <p><strong>Valid Until:</strong> <?= htmlspecialchars($estimate['expiry_date']) ?></p>
                     <p><strong>Status</strong>
                     <?php if ($estimate['status'] === 'accepted'): ?>
-                        <span class="badge bg-success">Accepted</span>
+                        <span class="pill pill-success">Accepted</span>
                         <?php elseif ($estimate['status'] === 'rejected'): ?>
-                            <span class="badge bg-danger">Rejected</span>
+                            <span class="pill pill-danger">Rejected</span>
                             <?php elseif ($estimate['status'] === 'sent'): ?>
-                                <span class="badge bg-info text-dark">Sent</span>
+                                <span class="pill pill-info text-dark">Sent</span>
                                 <?php else: ?>
-                                    <span class="badge bg-secondary">Draft</span>
+                                    <span class="pill pill-secondary">Draft</span>
                                     <?php endif; ?>   
                     </p>
                     <div class="mb-3">
-                        <a href="view_estimate.php?id=<?= $id ?>&status=sent" class="btn btn-sm btn-outline-info">Mark Sent</a>
-                        <a href="view_estimate.php?id=<?= $id ?>&status=rejected" class="btn btn-sm btn-outline-danger">Mark Rejected</a>
+                        <a href="view_estimate.php?id=<?= $id ?>&convert=1&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-sm btn-outline-info">Convert to Invoice</a>
+                        <a href="view_estimate.php?id=<?= $id ?>&status=sent&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-sm btn-outline-info">Mark Sent</a>
+                        <a href="view_estimate.php?id=<?= $id ?>&status=rejected&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-sm btn-outline-danger">Mark Rejected</a>
                     </div>
                     <table class="table table-bordered mt-3">
                         <tr>
                             <th>Description</th>
-                            <th>Quantity<th>
+                            <th>Quantity</th>
                             <th>Unit Price</th>
                             <th>Line Total</th>
                         </tr>
@@ -118,8 +121,8 @@ if (isset($_GET['convert'])) {
                             <tr>
                                 <td><?= htmlspecialchars($item['description']) ?></td>
                                 <td><?= $item['quantity'] ?></td>
-                                <td><?= number_format($item['unit_price'], 2) ?>?></td>
-                                <td><?= number_format($item['quantity'] * $item['unit_price'], 2) ?>?></td>
+                                <td><?= number_format($item['unit_price'], 2) ?></td>
+                                <td><?= number_format($item['quantity'] * $item['unit_price'], 2) ?></td>
                             </tr>
                             <?php endforeach; ?>
                     </table>
@@ -131,5 +134,6 @@ if (isset($_GET['convert'])) {
                         <?php endif; ?>
                 </div>
             </div>
+            <?php include 'footer.php'; ?>
         </body>
     </html>

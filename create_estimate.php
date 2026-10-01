@@ -1,4 +1,5 @@
 <?php
+require 'auth.php';
 require 'db.php';
 $clients = $pdo->query("SELECT * FROM clients ORDER By name")->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -7,27 +8,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $estimate_date = $_POST['estimate_date'];
     $expiry_date = $_POST['expiry_date'];
     $terms = $_POST['terms'];
-$pdo->beginTransaction();
-$stmt = $pdo->prepare("INSERT INTO estimates (client_id, estimate_number, estimate_date, expiry_date, status, terms) VALUES (?, ?, ?, ?, 'draft', ?)");
-$stmt->execute([$client_id, $estimate_number, $estimate_date, $expiry_date, $terms]);
-$estimate_id = $pdo->lastInsertId();
-$itemStmt = $pdo->prepare("INSERT INTO estimate_items (estimate_id, description, quantity, unit_price) VALUES (?, ?, ?, ?)");
-foreach ($_POST['description'] as $i =>$desc) {
-    if (trim($desc) === '') continue;
-    $qty = $_POST['quantity'][$i];
-    $price = $_POST['unit_price'][$i];
-    $itemStmt->execute([$estimate_id, $desc, $qty, $price]);
-}
-$pdo->commit();
-header("Location: view_estimate.php?id=$estimate_id");
-exit;
-}
-?>
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare("INSERT INTO estimates (client_id, estimate_number, estimate_date, expiry_date, status, terms) VALUES (?, ?, ?, ?, 'draft', ?)");
+    $stmt->execute([$client_id, $estimate_number, $estimate_date, $expiry_date, $terms]);
+    $estimate_id = $pdo->lastInsertId();
+    $itemStmt = $pdo->prepare("INSERT INTO estimate_items (estimate_id, description, quantity, unit_price) VALUES (?, ?, ?, ?)");
+    foreach ($_POST['description'] as $i =>$desc) {
+        if (trim($desc) === '') continue;
+        $qty = $_POST['quantity'][$i];
+        $price = $_POST['unit_price'][$i];
+        $itemStmt->execute([$estimate_id, $desc, $qty, $price]);
+        }
+        $pdo->commit();
+        header("Location: view_estimate.php?id=$estimate_id");
+        exit;
+        }
+        ?>
+        
 <!DOCTYPE html>
 <html>
     <head>
         <title>Create Estimate</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="custom.css" rel="stylesheet">
     </head>
     <body>
         <?php include 'nav.php'; ?>
@@ -44,25 +48,25 @@ exit;
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Estimate Number</label>
+                        <label class="form-label" for="estimate_number">Estimate Number</label>
                         <input type="text" name="estimate_number" class="form-control" required>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Estimate Date</label>
+                        <label class="form-label" for="estimate_date">Estimate Date</label>
                         <input type="date" name="estimate_date" class="form-control" required>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Valid Until</label>
+                        <label class="form-label" for="expiry_date">Valid Until</label>
                         <input type="date" name="expiry_date" class="form-control">
                     </div>
                 </div>
                 <h3>Items</h3>
                 <table id="items-table" class="table table-bordered">
                     <tr>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th></th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col"></th>
                     </tr>
                     <tr>
                         <td><input type="text" name="description[]" class="form-control"></td>
@@ -97,5 +101,6 @@ exit;
                 row.remove();
             }
         </script>
+        <?php include 'footer.php'; ?>
     </body>
 </html>

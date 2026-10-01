@@ -1,0 +1,335 @@
+/* ---------- Theme tokens ---------- */
+:root {
+    --bg: #141414;
+    --surface: #1e1e1e;
+    --surface-2: #262626;
+    --border: #2e2e2e;
+    --text: #f2f2f2;
+    --text-muted: #9a9a9a;
+    --accent: #c6ff3d;
+    --accent-text: #141414;
+    --radius: 18px;
+    --radius-sm: 10px;
+}
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* ---------- Floating pill nav ---------- */
+.app-nav {
+    padding: 20px;
+}
+
+.app-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.app-logo {
+    font-weight: 700;
+    color: var(--text) !important;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.app-nav-link {
+    color: var(--text-muted) !important;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+
+.app-nav-links {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+
+.app-nav-link:hover {
+    color: var(--text) !important;
+    background: var(--surface-2);
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+a {
+    color: var(--accent);
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    background: var(--bg) !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar-brand, .nav-link {
+    color: var(--text) !important;
+}
+
+.nav-link:hover {
+    color: var(--accent) !important;
+}
+
+/* ---------- Page title / sections ---------- */
+.page-title {
+    font-weight: 700;
+    margin: 32px 0 24px;
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 32px 0 16px;
+}
+
+/* ---------- Stat cards ---------- */
+.stat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-value.accent { color: var(--accent); }
+.stat-value.warn { color: #ff6b6b; }
+
+.stat-value-sm {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+/* ---------- Status pills ---------- */
+.pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.pill-warn { background: #3a2e14; color: #ffc93d; }
+.pill-info { background: #163a3f; color: #3dd9ff; }
+.pill-accent { background: #2a3a14; color: var(--accent); }
+
+/* ---------- List card (overdue invoices, etc.) ---------- */
+.list-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+}
+
+.list-row:last-child {
+    border-bottom: none;
+}
+
+.list-row:hover {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.list-row-title {
+    font-weight: 600;
+}
+
+.list-row-sub {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+.list-row-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+
+/* ---------- Tables ---------- */
+.table {
+    color: var(--text);
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.table td {
+    border-color: var(--border) !important;
+    vertical-align: middle;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--surface-2);
+    color: var(--text);
+}
+
+/* ---------- Outline buttons on dark background ---------- */
+.btn-outline-primary {
+    color: #6fb8ff;
+    border-color: #2e4a66;
+}
+.btn-outline-primary:hover {
+    background: #2e4a66;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+.btn-outline-secondary:hover {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.btn-outline-danger {
+    color: #ff8080;
+    border-color: #5c2626;
+}
+.btn-outline-danger:hover {
+    background: #5c2626;
+    color: #fff;
+}
+
+.btn-outline-success {
+    color: var(--accent);
+    border-color: #2a3a14;
+}
+.btn-outline-success:hover {
+    background: #2a3a14;
+    color: var(--accent);
+}
+
+.btn-outline-info {
+    color: #3dd9ff;
+    border-color: #163a3f;
+}
+.btn-outline-info:hover {
+    background: #163a3f;
+    color: #3dd9ff;
+}
+
+/* ---------- Forms ---------- */
+.form-control, .form-select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+}
+
+.form-control:focus, .form-select:focus {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(198, 255, 61, 0.2);
+}
+
+.form-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* ---------- Badges (status pills) ---------- */
+.badge {
+    border-radius: 999px;
+    padding: 0.45em 0.9em;
+    font-weight: 600;
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+/* ---------- Footer ---------- */
+footer {
+    color: var(--text-muted);
+    border-color: var(--border) !important;
+}
+
+footer a {
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .app-nav-inner {
+        flex-wrap: wrap;
+        border-radius: 24px;
+    }
+    .app-nav-links {
+        flex-wrap: wrap;
+    }
+}
