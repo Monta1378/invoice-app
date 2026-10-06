@@ -1,1 +1,3 @@
 vendor/
+# Uploaded profile pictures (keep the folder + .htaccess, not the actual files) uploads/*
+!uploads/.htaccess

@@ -1,8 +1,6 @@
 -- Invoice App database schema
 -- Run this in MySQL Workbench or phpMyAdmin to create everything from scratch.
 
-CREATE DATABASE IF NOT EXISTS invoice_app;
-USE invoice_app;
 
 CREATE TABLE clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
